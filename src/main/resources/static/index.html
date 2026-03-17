@@ -1,0 +1,434 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Student Management</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      :root {
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        color-scheme: light dark;
+      }
+
+      body {
+        margin: 0;
+        padding: 2rem;
+        background: #0f172a;
+        color: #e5e7eb;
+      }
+
+      .app {
+        max-width: 900px;
+        margin: 0 auto;
+      }
+
+      h1 {
+        margin-bottom: 0.25rem;
+      }
+
+      .subtitle {
+        margin-bottom: 1.5rem;
+        color: #9ca3af;
+        font-size: 0.95rem;
+      }
+
+      .card {
+        background: #020617;
+        border-radius: 0.75rem;
+        border: 1px solid #1f2937;
+        padding: 1.5rem;
+        box-shadow: 0 18px 45px rgba(15, 23, 42, 0.9);
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: 2fr 3fr;
+        gap: 1.5rem;
+      }
+
+      @media (max-width: 800px) {
+        .grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      label {
+        display: block;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: #9ca3af;
+        margin-bottom: 0.25rem;
+      }
+
+      input {
+        width: 100%;
+        padding: 0.55rem 0.7rem;
+        border-radius: 0.5rem;
+        border: 1px solid #374151;
+        background: #020617;
+        color: #e5e7eb;
+        font-size: 0.9rem;
+        box-sizing: border-box;
+      }
+
+      input:focus {
+        outline: 2px solid #38bdf8;
+        border-color: #38bdf8;
+      }
+
+      .field {
+        margin-bottom: 0.75rem;
+      }
+
+      .row {
+        display: flex;
+        gap: 0.75rem;
+      }
+
+      .row > .field {
+        flex: 1;
+      }
+
+      button {
+        border: none;
+        border-radius: 999px;
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, #22c55e, #16a34a);
+        color: white;
+      }
+
+      .btn-secondary {
+        background: #020617;
+        color: #e5e7eb;
+        border: 1px solid #374151;
+      }
+
+      .btn-danger {
+        background: #b91c1c;
+        color: white;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 1rem;
+        font-size: 0.9rem;
+      }
+
+      th,
+      td {
+        padding: 0.55rem 0.6rem;
+        text-align: left;
+        border-bottom: 1px solid #111827;
+      }
+
+      th {
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: #9ca3af;
+      }
+
+      tr:hover td {
+        background: rgba(15, 23, 42, 0.8);
+      }
+
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.15rem 0.45rem;
+        border-radius: 999px;
+        border: 1px solid rgba(148, 163, 184, 0.5);
+        font-size: 0.7rem;
+        color: #9ca3af;
+        gap: 0.3rem;
+      }
+
+      .badge span {
+        width: 7px;
+        height: 7px;
+        border-radius: 999px;
+        background: #22c55e;
+        box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.25);
+      }
+
+      .status {
+        min-height: 1.1rem;
+        font-size: 0.8rem;
+        color: #9ca3af;
+        margin-top: 0.5rem;
+      }
+
+      .status.error {
+        color: #fecaca;
+      }
+
+      .status.success {
+        color: #bbf7d0;
+      }
+
+      .actions {
+        display: flex;
+        gap: 0.4rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <div style="display: flex; justify-content: space-between; align-items: center; gap: 1rem">
+        <div>
+          <h1>Student Management</h1>
+          <div class="subtitle">
+            Simple UI on top of your Spring Boot API. All data comes from
+            <code>/api/students</code>.
+          </div>
+        </div>
+        <div class="badge">
+          <span></span>
+          <div>Connected to backend</div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top: 1rem">
+        <div class="grid">
+          <section>
+            <h3 style="margin-top: 0; margin-bottom: 0.75rem">Create / edit student</h3>
+            <form id="student-form">
+              <input type="hidden" id="student-id" />
+
+              <div class="row">
+                <div class="field">
+                  <label for="firstName">First name</label>
+                  <input id="firstName" required />
+                </div>
+                <div class="field">
+                  <label for="lastName">Last name</label>
+                  <input id="lastName" required />
+                </div>
+              </div>
+
+              <div class="field">
+                <label for="email">Email</label>
+                <input id="email" type="email" required />
+              </div>
+
+              <div class="field">
+                <label for="major">Major</label>
+                <input id="major" placeholder="Computer Science" />
+              </div>
+
+              <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem">
+                <button type="submit" class="btn-primary" id="save-btn">
+                  <span>💾</span>
+                  <span id="save-label">Create student</span>
+                </button>
+                <button type="button" class="btn-secondary" id="reset-btn">Clear form</button>
+              </div>
+
+              <div id="form-status" class="status"></div>
+            </form>
+          </section>
+
+          <section>
+            <div style="display: flex; justify-content: space-between; align-items: center">
+              <h3 style="margin-top: 0; margin-bottom: 0.75rem">Students</h3>
+              <button type="button" class="btn-secondary" id="refresh-btn">🔄 Refresh</button>
+            </div>
+
+            <table>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Major</th>
+                  <th style="width: 140px">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="students-body">
+                <tr>
+                  <td colspan="5" style="text-align: center; padding: 1.5rem 0; color: #6b7280">
+                    Loading students…
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div id="list-status" class="status"></div>
+          </section>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const apiBase = "/api/students";
+
+      const form = document.getElementById("student-form");
+      const idInput = document.getElementById("student-id");
+      const firstNameInput = document.getElementById("firstName");
+      const lastNameInput = document.getElementById("lastName");
+      const emailInput = document.getElementById("email");
+      const majorInput = document.getElementById("major");
+      const formStatus = document.getElementById("form-status");
+      const listStatus = document.getElementById("list-status");
+      const saveBtn = document.getElementById("save-btn");
+      const saveLabel = document.getElementById("save-label");
+      const resetBtn = document.getElementById("reset-btn");
+      const refreshBtn = document.getElementById("refresh-btn");
+      const tbody = document.getElementById("students-body");
+
+      function setFormMode(mode) {
+        if (mode === "create") {
+          idInput.value = "";
+          saveLabel.textContent = "Create student";
+          formStatus.textContent = "";
+        } else {
+          saveLabel.textContent = "Update student";
+        }
+      }
+
+      function setStatus(el, message, type = "") {
+        el.textContent = message ?? "";
+        el.classList.remove("error", "success");
+        if (type) {
+          el.classList.add(type);
+        }
+      }
+
+      async function fetchJson(url, options) {
+        const res = await fetch(url, {
+          headers: { "Content-Type": "application/json" },
+          ...options,
+        });
+        if (!res.ok) {
+          const text = await res.text();
+          throw new Error(text || res.statusText);
+        }
+        return res.status === 204 ? null : res.json();
+      }
+
+      async function loadStudents() {
+        setStatus(listStatus, "Loading…");
+        try {
+          const students = await fetchJson(apiBase);
+          if (!Array.isArray(students) || students.length === 0) {
+            tbody.innerHTML =
+              '<tr><td colspan="5" style="text-align:center; padding: 1.5rem 0; color:#6b7280">No students yet. Add one using the form.</td></tr>';
+          } else {
+            tbody.innerHTML = "";
+            for (const s of students) {
+              const tr = document.createElement("tr");
+              tr.innerHTML = `
+                <td>${s.id}</td>
+                <td>${s.firstName} ${s.lastName}</td>
+                <td>${s.email}</td>
+                <td>${s.major ?? ""}</td>
+                <td>
+                  <div class="actions">
+                    <button type="button" class="btn-secondary btn-sm" data-action="edit">Edit</button>
+                    <button type="button" class="btn-danger btn-sm" data-action="delete">Delete</button>
+                  </div>
+                </td>
+              `;
+
+              tr.querySelector('[data-action="edit"]').onclick = () => {
+                idInput.value = s.id;
+                firstNameInput.value = s.firstName;
+                lastNameInput.value = s.lastName;
+                emailInput.value = s.email;
+                majorInput.value = s.major ?? "";
+                setFormMode("edit");
+              };
+
+              tr.querySelector('[data-action="delete"]').onclick = async () => {
+                if (!confirm(`Delete student #${s.id}?`)) return;
+                try {
+                  await fetchJson(`${apiBase}/${s.id}`, { method: "DELETE" });
+                  setStatus(listStatus, "Deleted student.", "success");
+                  if (idInput.value === String(s.id)) {
+                    form.reset();
+                    setFormMode("create");
+                  }
+                  await loadStudents();
+                } catch (err) {
+                  console.error(err);
+                  setStatus(listStatus, "Failed to delete student.", "error");
+                }
+              };
+
+              tbody.appendChild(tr);
+            }
+          }
+          setStatus(listStatus, "Loaded students.", "success");
+        } catch (err) {
+          console.error(err);
+          setStatus(listStatus, "Failed to load students. Check backend is running.", "error");
+        }
+      }
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const payload = {
+          firstName: firstNameInput.value.trim(),
+          lastName: lastNameInput.value.trim(),
+          email: emailInput.value.trim(),
+          major: majorInput.value.trim() || null,
+        };
+
+        if (!payload.firstName || !payload.lastName || !payload.email) {
+          setStatus(formStatus, "First name, last name and email are required.", "error");
+          return;
+        }
+
+        const id = idInput.value;
+        const isEdit = !!id;
+        const method = isEdit ? "PUT" : "POST";
+        const url = isEdit ? `${apiBase}/${id}` : apiBase;
+
+        saveBtn.disabled = true;
+        setStatus(formStatus, isEdit ? "Updating student…" : "Creating student…");
+
+        try {
+          await fetchJson(url, { method, body: JSON.stringify(payload) });
+          setStatus(
+            formStatus,
+            isEdit ? "Student updated successfully." : "Student created successfully.",
+            "success",
+          );
+          if (!isEdit) {
+            form.reset();
+          }
+          setFormMode(isEdit ? "edit" : "create");
+          await loadStudents();
+        } catch (err) {
+          console.error(err);
+          setStatus(formStatus, "Request failed. Check console / backend logs.", "error");
+        } finally {
+          saveBtn.disabled = false;
+        }
+      });
+
+      resetBtn.addEventListener("click", () => {
+        form.reset();
+        setFormMode("create");
+      });
+
+      refreshBtn.addEventListener("click", () => loadStudents());
+
+      // Initial load
+      setFormMode("create");
+      loadStudents();
+    </script>
+  </body>
+</html>
+
