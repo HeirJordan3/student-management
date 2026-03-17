@@ -1,6 +1,6 @@
 # Student Management (Mini Project)
 
-Spring Boot REST API for managing `Student` records with full CRUD + partial updates, backed by an in-memory H2 database. Built to validate requests quickly in Postman.
+Spring Boot REST API for managing `Student` records with full CRUD + partial updates, backed by an in-memory H2 database, plus a tiny HTML/JS frontend to show how a client talks to the API. Built to validate requests quickly in Postman and the browser.
 
 ## Tech
 
@@ -15,6 +15,15 @@ Spring Boot REST API for managing `Student` records with full CRUD + partial upd
 ```
 
 App runs at `http://localhost:8080`.
+
+## Frontend
+
+- Served directly by Spring Boot from `src/main/resources/static/index.html`
+- Open in browser at: `http://localhost:8080/`
+- Shows:
+  - Student table (list, edit, delete)
+  - Form to create/update students
+  - All calls go through the REST API below.
 
 ## API endpoints
 
